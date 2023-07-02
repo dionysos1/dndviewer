@@ -98,7 +98,7 @@ class Monster {
     conditionImmunities: json["condition_immunities"] != null ? List<dynamic>.from(json["condition_immunities"].map((x) => x)) : [],
     senses: json["senses"] != null ? Senses.fromJson(json["senses"]) : Senses(darkvision: '', passivePerception: -1),
     languages: json["languages"]  ?? '',
-    challengeRating: json["challenge_rating"] ?? -1,
+    challengeRating: json.containsKey("challenge_rating") ? (json["challenge_rating"] as num).toDouble() : -1.0,
     xp: json["xp"] ?? -1,
     specialAbilities: json["special_abilities"] != null ? List<SpecialAbility>.from(json["special_abilities"].map((x) => SpecialAbility.fromJson(x))) : [],
     actions: json["actions"] != null ? List<MonsterAction>.from(json["actions"].map((x) => MonsterAction.fromJson(x))) : [],
@@ -222,7 +222,7 @@ class MonsterAction {
 
 class ActionAction {
   String actionName;
-  int count;
+  dynamic count;
   String type;
 
   ActionAction({
@@ -254,8 +254,8 @@ class Damage {
   });
 
   factory Damage.fromJson(Map<String, dynamic> json) => Damage(
-    damageType: DcTypeClass.fromJson(json["damage_type"]),
-    damageDice: json["damage_dice"],
+    damageType: json.containsKey("damage_type") ? DcTypeClass.fromJson(json["damage_type"]) : DcTypeClass.empty(),
+    damageDice: json.containsKey("damage_type") ? json["damage_dice"] : '',
   );
 
   Map<String, dynamic> toJson() => {

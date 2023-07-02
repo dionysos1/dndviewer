@@ -55,4 +55,16 @@ class Result {
     "name": name,
     "url": url,
   };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Result &&
+              runtimeType == other.runtimeType &&
+              name == other.name &&
+              url == other.url && index == other.index;
+
+  static empty() {
+    return Result(index: '', name: '', url: '');
+  }
 }

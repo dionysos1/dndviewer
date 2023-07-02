@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'favo_helper.dart';
 import 'home.dart';
 import 'monster_list_provider.dart';
 import 'monster_provider.dart';
@@ -8,7 +9,8 @@ void main() {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GetMonsterList()),
-        ChangeNotifierProvider(create: (_) => GetMonster())
+        ChangeNotifierProvider(create: (_) => GetMonster()),
+        ChangeNotifierProvider(create: (_) => FavoriteController())
       ],
       child: const MyApp()));
 }
@@ -19,14 +21,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'DnD Monster viewer',
       theme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: Colors.blueGrey,
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'DnD Monster viewer'),
+      home: const HomeView(startIndex: 0, ),
     );
   }
 }
