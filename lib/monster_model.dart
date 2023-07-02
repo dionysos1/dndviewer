@@ -84,7 +84,7 @@ class Monster {
     hitPoints: json["hit_points"] ?? -1,
     hitDice: json["hit_dice"] ?? '',
     hitPointsRoll: json["hit_points_roll"] ?? '',
-    speed: json["speed"] != null ? Speed.fromJson(json["speed"]) : Speed(walk: '', swim: ''),
+    speed: json["speed"] != null ? Speed.fromJson(json["speed"]) : Speed.empty(),
     strength: json["strength"] ?? -1,
     dexterity: json["dexterity"] ?? -1,
     constitution: json["constitution"] ?? -1,
@@ -151,7 +151,7 @@ class Monster {
         hitPoints: -1,
         hitDice: '',
         hitPointsRoll: '',
-        speed: Speed(walk: '', swim: ''),
+        speed: Speed.empty(),
         strength: -1,
         dexterity: -1,
         constitution: -1,
@@ -455,19 +455,35 @@ class SpecialAbility {
 class Speed {
   String walk;
   String swim;
+  String burrow;
+  String fly;
+  String climb;
+  String hover;
 
   Speed({
     required this.walk,
     required this.swim,
+    required this.burrow,
+    required this.fly,
+    required this.climb,
+    required this.hover,
   });
 
   factory Speed.fromJson(Map<String, dynamic> json) => Speed(
     walk: json["walk"] ?? '',
     swim: json["swim"] ?? '',
+    burrow: json["burrow"] ?? '',
+    fly: json["fly"] ?? '',
+    climb: json["climb"] ?? '',
+    hover: json["hover"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
     "walk": walk,
     "swim": swim,
   };
+
+  static empty() {
+    return Speed(walk: '', swim: '', burrow: '', fly: '', climb: '', hover: '');
+  }
 }

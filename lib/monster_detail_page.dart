@@ -104,10 +104,129 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
 
   monsterInfo(Monster value) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      children: mainStats(value)
+
+
+
+    );
+  }
+
+  mainStats(Monster value){
+    List<Widget> statblocks = [];
+    // statblocks.add();
+    statblocks.add(const SizedBox(height: 15,));
+    /// size type and alignment
+    statblocks.add(Text('${value.size} ${value.type}, ${value.alignment}'));
+    /// Divider
+    statblocks.add(Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Divider(color: Colors.red.shade700, indent: 10, endIndent: 10,),
+    ));
+    /// AC
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(
+        children: [
+          const Text('Armor Class: ', style: TextStyle(fontWeight: FontWeight.bold),),
+          Text('${value.armorClass.first.value} (${value.armorClass.first.type})'),
+        ],
+      ),
+    ));
+    /// HP and avg. roll
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(
+        children: [
+          const Text('Hit Points: ', style: TextStyle(fontWeight: FontWeight.bold),),
+          Text('${value.hitPoints}'),
+          Text(' (hp roll: ${value.hitPointsRoll})', style: TextStyle(fontStyle: FontStyle.italic),)
+        ],
+      ),
+    ));
+    /// Speed
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(
+        children: [
+          const Text('Speed: ', style: TextStyle(fontWeight: FontWeight.bold),),
+          Row(
+            children: checkSpeed(value.speed),
+          ),
+        ],
+      ),
+    ));
+    /// Hit Die
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(
+        children: [
+          const Text('Hit Die: ', style: TextStyle(fontWeight: FontWeight.bold),),
+          Text('${value.hitDice}'),
+        ],
+      ),
+    ));
+    /// Divider
+    statblocks.add(Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Divider(color: Colors.red.shade700, indent: 10, endIndent: 10,),
+    ));
+    /// Stats
+    statblocks.add(Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Center(child: Text(value.name,)),
-      ],
+      Wrap(
+        runSpacing: 8,
+        spacing: 15,
+        children: [
+          miniStatBlock(stat: 'STR', value: value.strength.toString()),
+          miniStatBlock(stat: 'DEX', value: value.dexterity.toString()),
+          miniStatBlock(stat: 'CON', value: value.constitution.toString()),
+
+      ],),
+      const SizedBox(height: 8,),
+      Wrap(
+        runSpacing: 8,
+        spacing: 15,
+        children: [
+          miniStatBlock(stat: 'INT', value: value.intelligence.toString()),
+          miniStatBlock(stat: 'WIS', value: value.wisdom.toString()),
+          miniStatBlock(stat: 'CHA', value: value.charisma.toString()),
+
+      ],)
+    ],));
+    /// Divider
+    statblocks.add(Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Divider(color: Colors.red.shade700, indent: 10, endIndent: 10,),
+    ));
+
+    return statblocks;
+  }
+
+  checkSpeed(Speed value) {
+    List<Widget> speedWidgets = [];
+
+    value.toJson().forEach((key, value) {
+      if (value.isNotEmpty) {
+        speedWidgets.add(Text(' $key: $value'));
+      }
+    });
+    return speedWidgets;
+  }
+
+  miniStatBlock({required String stat, required String value}){
+    return Container(
+      width: 50,
+      height: 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0), // Set rounded corners
+        border: Border.all(width: 2.0, color: Colors.red.shade700), // Set 2px border
+
+      ),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+        Text(stat, style: TextStyle(fontWeight: FontWeight.bold),),
+        Text(value, style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),)
+      ],),
     );
   }
 
@@ -219,9 +338,6 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
     }
     return expansionList;
   }
-
-
-
 
 
 }
