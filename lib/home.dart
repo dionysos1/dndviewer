@@ -1,9 +1,8 @@
+import 'package:dndviewer/monster_detail_page.dart';
 import 'package:flutter/material.dart';
-import 'Monster_Provider.dart';
 import 'package:provider/provider.dart';
-
-import 'monsterModel.dart';
-
+import 'monster_list_model.dart';
+import 'monster_list_provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -17,7 +16,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
-    var fetchData = Provider.of<getData>(context, listen: false);
+    var fetchData = Provider.of<GetMonsterList>(context, listen: false);
     fetchData.getMonsters();
 
     super.initState();
@@ -77,30 +76,37 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   monsterList() {
-    return Consumer<getData>(
+    return Consumer<GetMonsterList>(
       builder: (context, value, child) {
-
-        List<Monsters> monsterList = value.monsters;
-        monsterList.sort((a, b) => a.challengeRating.compareTo(b.challengeRating));
-
-        monsterList.sort((a, b) {
-          int challengeRatingComp = a.challengeRating.compareTo(b.challengeRating);
-          if (challengeRatingComp == 0) {
-            return a.name.compareTo(b.name); // '-' for descending
-          }
-          return challengeRatingComp;
-        });
+        /// sort on challenge rating
+        // List<Result> monsterList = value.monsters.results;
+        // monsterList.sort((a, b) => a.challengeRating.compareTo(b.challengeRating));
+        //
+        // monsterList.sort((a, b) {
+        //   int challengeRatingComp = a.challengeRating.compareTo(b.challengeRating);
+        //   if (challengeRatingComp == 0) {
+        //     return a.name.compareTo(b.name); // '-' for descending
+        //   }
+        //   return challengeRatingComp;
+        // });
 
         return ListView.builder(
             padding: const EdgeInsets.all(8),
-            itemCount: value.monsters.length,
+            itemCount: value.monsters.results.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
-                title: Text(monsterList[index].name),
-                subtitle: Text(monsterList[index].type.name),
-                leading: Text(monsterList[index].challengeRating.toString()),
+                title: Text(value.monsters.results[index].name),
+                subtitle: Text(value.monsters.results[index].url),
+                leading: Text((index + 1).toString()),
                 trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                onTap: () => (),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MonsterDetailPage(
+                          url: value.monsters.results[index].url,
+                          index: value.monsters.results[index].index,
+                          name: value.monsters.results[index].name)),
+                ),
               );
             });
       },

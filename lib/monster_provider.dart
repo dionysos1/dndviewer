@@ -1,22 +1,24 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'monsterModel.dart';
+import 'globals.dart';
+import 'monster_model.dart';
+import 'package:http/http.dart' as http;
 
-class getData with ChangeNotifier {
+class GetMonster with ChangeNotifier {
 
-  List<Monsters> monsters = [];
-  String test = 'test';
+  Monster monster = Monster.empty();
 
-  Future getMonsters() async {
-    final String monsterJson = await rootBundle.loadString('assets/json/monsters.json');
+  Future getMonsterInfo(url) async {
+    monster = Monster.empty();
+    var response = await http.get(Uri.parse(apiUrl + url));
+    print(apiUrl + url);
     try {
-      monsters = monstersFromJson(monsterJson);
+      monster = monsterFromJson(response.body);
     } on Exception catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
-    print('Amount of monsters: ' + monsters.length.toString());
+    debugPrint('monster name: ${monster.name}');
 
     notifyListeners();
     }

@@ -1,13 +1,15 @@
-
 import 'package:flutter/material.dart';
-import 'Monster_Provider.dart';
-import 'home.dart';
 import 'package:provider/provider.dart';
-
+import 'home.dart';
+import 'monster_list_provider.dart';
+import 'monster_provider.dart';
 
 void main() {
   runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => getData())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => GetMonsterList()),
+        ChangeNotifierProvider(create: (_) => GetMonster())
+      ],
       child: const MyApp()));
 }
 
