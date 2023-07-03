@@ -40,6 +40,7 @@ class CustomMonsterController with ChangeNotifier {
   removeMonster({required Monster itemToRemove}) async {
     customMonsters.removeWhere((result) => result == itemToRemove);
 
+
     notifyListeners();
     return customMonstersToStringList();
   }
