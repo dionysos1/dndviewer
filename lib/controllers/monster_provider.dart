@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'globals.dart';
-import 'monster_model.dart';
+import '../globals.dart';
+import '../models/monster_model.dart';
 import 'package:http/http.dart' as http;
 
 class GetMonster with ChangeNotifier {

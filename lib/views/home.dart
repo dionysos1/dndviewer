@@ -1,10 +1,10 @@
 import 'package:dndviewer/globals.dart';
-import 'package:dndviewer/monster_detail_page.dart';
+import 'package:dndviewer/views/monster_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'favo_helper.dart';
-import 'monster_list_model.dart';
-import 'monster_list_provider.dart';
+import '../misc/favo_helper.dart';
+import '../models/monster_list_model.dart';
+import '../controllers/monster_list_provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key, required this.startIndex});
@@ -113,7 +113,7 @@ class Favorites {
     return Consumer<FavoriteController>(
     builder: (context, value, child)
     {
-      return value.favorites.isEmpty ? Center(child: Text('No favorites yet..')) : ListView.builder(
+      return value.favorites.isEmpty ? const Center(child: Text('No favorites yet..')) : ListView.builder(
           padding: const EdgeInsets.all(8),
           itemCount: value.favorites.length,
           itemBuilder: (BuildContext context, int index) {

@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:dndviewer/monster_list_model.dart';
+import 'package:dndviewer/models/monster_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'globals.dart';
+import '../globals.dart';
 
 class FavoriteController with ChangeNotifier {
   List<Result> favorites = globalFavorites;

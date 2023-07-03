@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'globals.dart';
+import '../globals.dart';
 import 'package:http/http.dart' as http;
-import 'monster_list_model.dart';
+import '../models/monster_list_model.dart';
 
 class GetMonsterList with ChangeNotifier {
 

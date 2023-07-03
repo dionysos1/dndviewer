@@ -1,13 +1,12 @@
 import 'dart:ui';
-
 import 'package:dndviewer/globals.dart';
-import 'package:dndviewer/home.dart';
+import 'package:dndviewer/views/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'favo_helper.dart';
-import 'monster_list_model.dart';
-import 'monster_model.dart';
-import 'monster_provider.dart';
+import '../misc/favo_helper.dart';
+import '../models/monster_list_model.dart';
+import '../models/monster_model.dart';
+import '../controllers/monster_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class MonsterDetailPage extends StatefulWidget {
@@ -103,11 +102,13 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
   }
 
   monsterInfo(Monster value) {
-    return Column(
-      children: mainStats(value)
+    return SingleChildScrollView(
+      child: Column(
+        children: mainStats(value)
 
 
 
+      ),
     );
   }
 
@@ -121,6 +122,16 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
     statblocks.add(Padding(
       padding: const EdgeInsets.all(8.0),
       child: Divider(color: Colors.red.shade700, indent: 10, endIndent: 10,),
+    ));
+    /// Challenge Rating
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(
+        children: [
+          const Text('Challenge Rating: ', style: TextStyle(fontWeight: FontWeight.bold),),
+          Text('${value.challengeRating} (${value.xp} XP)'),
+        ],
+      ),
     ));
     /// AC
     statblocks.add(Padding(
@@ -149,8 +160,10 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
       child: Row(
         children: [
           const Text('Speed: ', style: TextStyle(fontWeight: FontWeight.bold),),
-          Row(
-            children: checkSpeed(value.speed),
+          Flexible(
+            child: Wrap(
+              children: checkSpeed(value.speed),
+            ),
           ),
         ],
       ),
@@ -171,26 +184,23 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
       child: Divider(color: Colors.red.shade700, indent: 10, endIndent: 10,),
     ));
     /// Stats
-    statblocks.add(Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    statblocks.add(Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-      Wrap(
-        runSpacing: 8,
-        spacing: 15,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           miniStatBlock(stat: 'STR', value: value.strength.toString()),
           miniStatBlock(stat: 'DEX', value: value.dexterity.toString()),
           miniStatBlock(stat: 'CON', value: value.constitution.toString()),
-
       ],),
-      const SizedBox(height: 8,),
-      Wrap(
-        runSpacing: 8,
-        spacing: 15,
+      const SizedBox(height: 15,),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           miniStatBlock(stat: 'INT', value: value.intelligence.toString()),
           miniStatBlock(stat: 'WIS', value: value.wisdom.toString()),
           miniStatBlock(stat: 'CHA', value: value.charisma.toString()),
-
       ],)
     ],));
     /// Divider
@@ -198,19 +208,120 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
       padding: const EdgeInsets.all(8.0),
       child: Divider(color: Colors.red.shade700, indent: 10, endIndent: 10,),
     ));
+    /// saving throws
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(children: [
+        const Text('Saving Throws: ', style: TextStyle(fontWeight: FontWeight.bold),),
+        const SizedBox(width: 2,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (ProficiencyElement i in value.proficiencies)
+              if (i.proficiency.index.contains('saving')) Text('${i.proficiency.name.replaceFirst('Saving Throw: ', '')}: ${i.value}'),
+          ],
+        ),
+      ],),
+    ));
+    /// Divider
+    statblocks.add(Align(alignment: Alignment.centerLeft, child: Padding(
+      padding: const EdgeInsets.only(left: 150),
+      child: SizedBox(width: 100, child: Divider(color: Colors.red.shade700, )),
+    )));
+    /// Skills
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(children: [
+        const Text('Skills: ', style: TextStyle(fontWeight: FontWeight.bold),),
+        const SizedBox(width: 62,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (ProficiencyElement i in value.proficiencies)
+              if (i.proficiency.index.contains('skill')) Text('${i.proficiency.name.replaceFirst('Skill: ', '')}: ${i.value}'),
+          ],
+        ),
+      ],),
+    ));
+    /// Divider
+    statblocks.add(Align(alignment: Alignment.centerLeft, child: Padding(
+      padding: const EdgeInsets.only(left: 150),
+      child: SizedBox(width: 100, child: Divider(color: Colors.red.shade700, )),
+    )));
+    /// senses
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(children: [
+        const Text('Senses: ', style: TextStyle(fontWeight: FontWeight.bold),),
+        const SizedBox(width: 50,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if(value.senses.darkvision.isNotEmpty) Text('Darkvision: ${value.senses.darkvision}'),
+            Text('Passive perception: ${value.senses.passivePerception}'),
+          ],
+        ),
+      ],),
+    ));
+    /// Divider
+    statblocks.add(Align(alignment: Alignment.centerLeft, child: Padding(
+      padding: const EdgeInsets.only(left: 150),
+      child: SizedBox(width: 100, child: Divider(color: Colors.red.shade700, )),
+    )));
+    /// Languages
+    statblocks.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+      child: Row(
+        children: [
+          const Text('Languages: ', style: TextStyle(fontWeight: FontWeight.bold),),
+          const SizedBox(width: 26,),
+          Flexible(child: Wrap(children: [Text('${value.languages}', softWrap: true,)])),
+        ],
+      ),
+    ));
+    /// Divider
+    statblocks.add(Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Divider(color: Colors.red.shade700, indent: 10, endIndent: 10,),
+    ));
+    /// special abilities
+    if (value.specialAbilities.isNotEmpty){
+      List<Widget> abilities = [];
+      for (SpecialAbility i in value.specialAbilities) {
+        abilities.add(Row(children: [
+          Text('${i.name}. ', style: const TextStyle(fontWeight: FontWeight.bold),),
+          if (i.dc != Dc.empty()) Text('(DC: ${i.dc.dcType.name} ${i.dc.dcValue})', style: const TextStyle(fontStyle: FontStyle.italic)),
+        ],));
+        abilities.add(Align(alignment: Alignment.centerLeft,child: Text('${i.desc}', softWrap: true, textAlign: TextAlign.left,)),);
+        abilities.add(Divider(color: Colors.red.shade700, indent: 132, endIndent: 132,));
+      }
+      statblocks.add(Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+        child: Column(children: abilities),
+      )
+
+    );
+    }
 
     return statblocks;
   }
 
   checkSpeed(Speed value) {
-    List<Widget> speedWidgets = [];
 
-    value.toJson().forEach((key, value) {
-      if (value.isNotEmpty) {
-        speedWidgets.add(Text(' $key: $value'));
-      }
-    });
-    return speedWidgets;
+    final speeds = {
+      'walk': value.walk,
+      'swim': value.swim,
+      'burrow': value.burrow,
+      'fly': value.fly,
+      'climb': value.climb,
+      'hover': value.hover,
+    };
+
+    return speeds.entries
+        .where((entry) => entry.value.isNotEmpty && entry.value != 'null')
+        .map((entry) => Text('${entry.key}: ${entry.value} '))
+        .toList();
+
   }
 
   miniStatBlock({required String stat, required String value}){
@@ -243,7 +354,7 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
           ),
         for (LegendaryAction action in value.legendaryActions)
           ExpansionTile(
-            childrenPadding: EdgeInsets.only(bottom: 10),
+            childrenPadding: const EdgeInsets.only(bottom: 10),
             title: Text(action.name),
             children: fillLegendaryTile(action),
 
@@ -253,15 +364,16 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
   }
 
   fillSubtitle(MonsterAction actions) {
-    String subtileString = '';
+    String subtitleString = '';
 
     if (actions.actions.isNotEmpty) {
-      for (ActionAction i in actions.actions) {
-        subtileString += ' ${i.actionName}';
+      for (int i = 0; i < actions.actions.length; i++) {
+        ActionAction action = actions.actions[i];
+        subtitleString += i == 0 ? action.actionName : ' | ${action.actionName}';
       }
-      return Text(subtileString.trim());
+      return Text(subtitleString.trim());
     }
-    return Text(subtileString.trim());
+    return Text(subtitleString.trim());
   }
 
   fillActionsTile(MonsterAction action) {

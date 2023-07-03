@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'favo_helper.dart';
-import 'home.dart';
-import 'monster_list_provider.dart';
-import 'monster_provider.dart';
+import 'misc/favo_helper.dart';
+import 'views/home.dart';
+import 'controllers/monster_list_provider.dart';
+import 'controllers/monster_provider.dart';
 
 void main() {
   runApp(MultiProvider(

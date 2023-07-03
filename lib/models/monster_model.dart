@@ -475,7 +475,7 @@ class Speed {
     burrow: json["burrow"] ?? '',
     fly: json["fly"] ?? '',
     climb: json["climb"] ?? '',
-    hover: json["hover"] ?? '',
+    hover: json["hover"].toString(),
   );
 
   Map<String, dynamic> toJson() => {
