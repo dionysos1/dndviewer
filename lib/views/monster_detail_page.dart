@@ -8,6 +8,8 @@ import '../models/monster_list_model.dart';
 import '../models/monster_model.dart';
 import '../controllers/monster_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
 
 class MonsterDetailPage extends StatefulWidget {
   final Result monster;
@@ -74,9 +76,9 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
             child: Scaffold(
               appBar: AppBar(
                 bottom: TabBar(tabs: [
-                  Tab(child: Text('Stats')),
-                  Tab(child: Text('Actions')),
-                  if(value.monster.image.isNotEmpty) Tab(child: Text('Image')),
+                  const Tab(child: Text('Stats')),
+                  const Tab(child: Text('Actions')),
+                  if(value.monster.image.isNotEmpty) const Tab(child: Text('Image')),
                 ]),
                 backgroundColor: Colors.red.shade700,
                 title: Center(child: Text(widget.monster.name)),
@@ -105,16 +107,13 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
     return SingleChildScrollView(
       child: Column(
         children: mainStats(value)
-
-
-
       ),
     );
   }
 
   mainStats(Monster value){
     List<Widget> statblocks = [];
-    // statblocks.add();
+
     statblocks.add(const SizedBox(height: 15,));
     /// size type and alignment
     statblocks.add(Text('${value.size} ${value.type}, ${value.alignment}'));
@@ -393,12 +392,12 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: ImageBlurBackground(imageUrl: apiUrl + imageUrl,),
+              child: ImageBlurBackground(imageUrl: imageUrl.contains('api') ? apiUrl + imageUrl : imageUrl,),
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
-              child: CachedNetworkImage(
-                imageUrl: apiUrl + imageUrl,
+              child: imageUrl.contains('api') ? CachedNetworkImage(
+                imageUrl: imageUrl.contains('api') ? apiUrl + imageUrl : imageUrl,
                 imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
@@ -412,6 +411,17 @@ class MonsterDetailPageState extends State<MonsterDetailPage> {
                     Center(child: CircularProgressIndicator(value: downloadProgress.progress)),
                 errorWidget: (context, url, error) =>
                 const Icon(Icons.error_outline),
+              ) : RotatedBox(
+                quarterTurns: -1,
+                child: Container(
+                    decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    image: DecorationImage(
+                    fit: BoxFit.contain,
+                    image: FileImage(File(imageUrl))
+                    )
+                    )
+                ),
               ),
             ),
           ],
@@ -461,10 +471,12 @@ class ImageBlurBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+
+    return
+    Stack(
       children: [
         /// Background image
-        CachedNetworkImage(
+        imageUrl.contains('api') ? CachedNetworkImage(
           imageUrl: imageUrl,
           imageBuilder: (context, imageProvider) => Container(
             height: MediaQuery.of(context).size.height,
@@ -475,6 +487,14 @@ class ImageBlurBackground extends StatelessWidget {
               ),
             ),
           ),
+        ) : RotatedBox(
+          quarterTurns: -1,
+          child: Container(
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: FileImage(File(imageUrl))))),
         ),
         /// Blurred overlay
         BackdropFilter(
@@ -485,5 +505,6 @@ class ImageBlurBackground extends StatelessWidget {
         ),
       ],
     );
+
   }
 }

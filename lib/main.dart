@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'misc/custom_monster_helper.dart';
 import 'misc/favo_helper.dart';
 import 'views/home.dart';
 import 'controllers/monster_list_provider.dart';
@@ -10,7 +11,8 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => GetMonsterList()),
         ChangeNotifierProvider(create: (_) => GetMonster()),
-        ChangeNotifierProvider(create: (_) => FavoriteController())
+        ChangeNotifierProvider(create: (_) => FavoriteController()),
+        ChangeNotifierProvider(create: (_) => CustomMonsterController()),
       ],
       child: const MyApp()));
 }

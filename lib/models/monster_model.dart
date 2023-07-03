@@ -147,7 +147,7 @@ class Monster {
         size: '',
         type: '',
         alignment: '',
-        armorClass: [],
+        armorClass: [ArmorClass(type: 'natural', value: 0)],
         hitPoints: -1,
         hitDice: '',
         hitPointsRoll: '',
